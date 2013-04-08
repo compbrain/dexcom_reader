@@ -82,7 +82,7 @@ class Dexcom(object):
 
   def readpacket(self, timeout=None):
     total_read = 4
-    intial_read = self.read(total_read)
+    initial_read = self.read(total_read)
     all_data = initial_read
     if ord(initial_read[0]) == 1:
       command = initial_read[3]
@@ -98,7 +98,7 @@ class Dexcom(object):
       suffix = self.read(2)
       sent_crc = struct.unpack('<H', suffix)[0]
       local_crc = crc16.crc16(all_data, 0, total_read)
-      if sent_crc != local_crc
+      if sent_crc != local_crc:
         raise constants.CrcError("readpacket Failed CRC check")
       num1 = total_read + 2
       return ReadPacket(command, out)
