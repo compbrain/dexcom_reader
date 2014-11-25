@@ -61,6 +61,8 @@ class BaseDatabaseRecord(object):
 
 
 class GenericTimestampedRecord(BaseDatabaseRecord):
+  FIELDS = [ ]
+  BASE_FIELDS = [ 'system_time', 'display_time' ]
   @property
   def system_time(self):
     return util.ReceiverTimeToTime(self.data[0])
@@ -69,6 +71,14 @@ class GenericTimestampedRecord(BaseDatabaseRecord):
   def display_time(self):
     return util.ReceiverTimeToTime(self.data[1])
 
+
+  def to_dict (self):
+    d = dict( )
+    for k in self.BASE_FIELDS + self.FIELDS:
+      d[k] = getattr(self, k)
+      if callable(getattr(d[k], 'isoformat', None)):
+        d[k] = d[k].isoformat( )
+    return d
 
 class GenericXMLRecord(GenericTimestampedRecord):
   FORMAT = '<II490sH'
@@ -159,6 +169,7 @@ class SensorRecord(GenericTimestampedRecord):
   # (system_seconds, display_seconds, unfiltered, filtered, rssi, crc)
   FORMAT = '<2IIIHH'
   # (unfiltered, filtered, rssi)
+  FIELDS = ['unfiltered', 'filtered', 'rssi']
   @property
   def unfiltered(self):
     return self.data[2]
@@ -171,18 +182,21 @@ class SensorRecord(GenericTimestampedRecord):
   def rssi(self):
     return self.data[3]
 
+  """
   def to_dict (self):
-    return dict(display_time=self.display_time
-      , system_time=self.system_time
+    return dict(display_time=self.display_time.isoformat( )
+      , system_time=self.system_time.isoformat( )
       , unfiltered=self.unfiltered
       , filtered=self.filtered
       , rssi=self.rssi
       )
+  """
 
 
 class EGVRecord(GenericTimestampedRecord):
   # uint, uint, ushort, byte, ushort
   # (system_seconds, display_seconds, glucose, trend_arrow, crc)
+  FIELDS = ['glucose', 'trend_arrow']
   FORMAT = '<2IHcH'
 
   @property
