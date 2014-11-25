@@ -2,6 +2,7 @@ import crc16
 import constants
 import struct
 import util
+import binascii
 
 
 class BaseDatabaseRecord(object):
@@ -96,6 +97,14 @@ class InsertionRecord(GenericTimestampedRecord):
     return '%s:  state=%s' % (self.display_time, self.session_state)
 
 
+class Calibration(GenericTimestampedRecord):
+  @property
+  def raw(self):
+    return binascii.hexlify(bytearray(self.data))
+
+  def __repr__(self):
+    return '%s: CAL SET:%s' % (self.display_time, self.raw)
+
 class MeterRecord(GenericTimestampedRecord):
   FORMAT = '<2IHIH'
 
@@ -144,6 +153,31 @@ class EventRecord(GenericTimestampedRecord):
   def __repr__(self):
     return '%s:  event_type=%s sub_type=%s value=%s' % (self.display_time, self.event_type,
                                     self.event_sub_type, self.event_value)
+
+class SensorRecord(GenericTimestampedRecord):
+  # uint, uint, uint, uint, ushort
+  # (system_seconds, display_seconds, unfiltered, filtered, rssi, crc)
+  FORMAT = '<2IIIHH'
+  # (unfiltered, filtered, rssi)
+  @property
+  def unfiltered(self):
+    return self.data[2]
+
+  @property
+  def filtered(self):
+    return self.data[3]
+
+  @property
+  def rssi(self):
+    return self.data[3]
+
+  def to_dict (self):
+    return dict(display_time=self.display_time
+      , system_time=self.system_time
+      , unfiltered=self.unfiltered
+      , filtered=self.filtered
+      , rssi=self.rssi
+      )
 
 
 class EGVRecord(GenericTimestampedRecord):
