@@ -235,6 +235,7 @@ class Dexcom(object):
       'METER_DATA': database_records.MeterRecord,
       'INSERTION_TIME': database_records.InsertionRecord,
       'EGV_DATA': database_records.EGVRecord,
+      'SENSOR_DATA': database_records.SensorRecord,
     }
     xml_parsed = ['PC_SOFTWARE_PARAMETER', 'MANUFACTURING_DATA']
     if record_type in generic_parser_map:

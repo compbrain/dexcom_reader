@@ -2,6 +2,7 @@ import crc16
 import constants
 import struct
 import util
+import binascii
 
 
 class BaseDatabaseRecord(object):
@@ -60,6 +61,8 @@ class BaseDatabaseRecord(object):
 
 
 class GenericTimestampedRecord(BaseDatabaseRecord):
+  FIELDS = [ ]
+  BASE_FIELDS = [ 'system_time', 'display_time' ]
   @property
   def system_time(self):
     return util.ReceiverTimeToTime(self.data[0])
@@ -68,6 +71,14 @@ class GenericTimestampedRecord(BaseDatabaseRecord):
   def display_time(self):
     return util.ReceiverTimeToTime(self.data[1])
 
+
+  def to_dict (self):
+    d = dict( )
+    for k in self.BASE_FIELDS + self.FIELDS:
+      d[k] = getattr(self, k)
+      if callable(getattr(d[k], 'isoformat', None)):
+        d[k] = d[k].isoformat( )
+    return d
 
 class GenericXMLRecord(GenericTimestampedRecord):
   FORMAT = '<II490sH'
@@ -95,6 +106,14 @@ class InsertionRecord(GenericTimestampedRecord):
   def __repr__(self):
     return '%s:  state=%s' % (self.display_time, self.session_state)
 
+
+class Calibration(GenericTimestampedRecord):
+  @property
+  def raw(self):
+    return binascii.hexlify(bytearray(self.data))
+
+  def __repr__(self):
+    return '%s: CAL SET:%s' % (self.display_time, self.raw)
 
 class MeterRecord(GenericTimestampedRecord):
   FORMAT = '<2IHIH'
@@ -145,10 +164,39 @@ class EventRecord(GenericTimestampedRecord):
     return '%s:  event_type=%s sub_type=%s value=%s' % (self.display_time, self.event_type,
                                     self.event_sub_type, self.event_value)
 
+class SensorRecord(GenericTimestampedRecord):
+  # uint, uint, uint, uint, ushort
+  # (system_seconds, display_seconds, unfiltered, filtered, rssi, crc)
+  FORMAT = '<2IIIHH'
+  # (unfiltered, filtered, rssi)
+  FIELDS = ['unfiltered', 'filtered', 'rssi']
+  @property
+  def unfiltered(self):
+    return self.data[2]
+
+  @property
+  def filtered(self):
+    return self.data[3]
+
+  @property
+  def rssi(self):
+    return self.data[3]
+
+  """
+  def to_dict (self):
+    return dict(display_time=self.display_time.isoformat( )
+      , system_time=self.system_time.isoformat( )
+      , unfiltered=self.unfiltered
+      , filtered=self.filtered
+      , rssi=self.rssi
+      )
+  """
+
 
 class EGVRecord(GenericTimestampedRecord):
   # uint, uint, ushort, byte, ushort
   # (system_seconds, display_seconds, glucose, trend_arrow, crc)
+  FIELDS = ['glucose', 'trend_arrow']
   FORMAT = '<2IHcH'
 
   @property
