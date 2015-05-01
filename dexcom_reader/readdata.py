@@ -225,7 +225,7 @@ class Dexcom(object):
     return self.ParsePage(header, packet_data)
 
   def GenericRecordYielder(self, header, data, record_type):
-    for x in range(header[1]):
+    for x in xrange(header[1]):
       yield record_type.Create(data, x)
 
   def ParsePage(self, header, data):
@@ -247,6 +247,14 @@ class Dexcom(object):
       raise NotImplementedError('Parsing of %s has not yet been implemented'
                                 % record_type)
 
+  def iter_records (self, record_type):
+    assert record_type in constants.RECORD_TYPES
+    page_range = self.ReadDatabasePageRange(record_type)
+    for x in xrange(page_range[1], page_range[0] or 1, -1):
+      records = list(self.ReadDatabasePage(record_type, x))
+      records.reverse( )
+      for record in records:
+        yield record
   def ReadRecords(self, record_type):
     records = []
     assert record_type in constants.RECORD_TYPES
