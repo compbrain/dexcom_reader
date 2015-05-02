@@ -15,7 +15,7 @@ setup(name='dexcom_reader',
     # I'm just maintaining the package, compbrain authored it.
     author_email="bewest+insulaudit@gmail.com",
     url="https://github.com/compbrain/dexcom_reader",
-    packages=['dexcom_reader'],
+    packages=find_packages( ),
     install_requires = [
       'pyserial'
     ],
