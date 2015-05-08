@@ -10,7 +10,6 @@ import struct
 import re
 import util
 import xml.etree.ElementTree as ET
-import numpy
 import platform
 
 
