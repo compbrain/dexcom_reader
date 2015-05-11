@@ -8,7 +8,7 @@ def readme():
         return f.read()
 
 setup(name='dexcom_reader',
-    version='0.0.3', # http://semver.org/
+    version='0.0.4', # http://semver.org/
     description='Audit, and inspect data from Dexcom G4.',
     long_description=readme(),
     author="Medevice contributors",
