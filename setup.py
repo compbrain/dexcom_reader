@@ -28,6 +28,7 @@ setup(name='dexcom_reader',
         'Topic :: Software Development :: Libraries'
     ],
     zip_safe=False,
+    include_package_data=True
 )
 
 #####
