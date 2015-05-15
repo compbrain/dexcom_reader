@@ -18,11 +18,12 @@ def readme():
 dataFiles = [ ]
 if platform.system( ) == 'Linux':
   prefix = '/'
-  if is_virtualenv( ):
-    prefix = ''
   dataFiles = [
       (prefix + 'etc/udev/rules.d', ['etc/udev/rules.d/80-dexcom.rules']),
     ]
+  if is_virtualenv( ):
+    prefix = ''
+    dataFiles = [ ]
 
 setup(name='dexcom_reader',
     version='0.0.6', # http://semver.org/
