@@ -8,6 +8,7 @@ def is_virtualenv ( ):
   import os
   proc = subprocess.Popen(['which', 'virtualenvwrapper'], stderr=subprocess.PIPE, stdout=subprocess.PIPE)
   has_venv = proc.poll( ) == 0
+  print "RESULT", proc.poll( ), has_venv, os.environ.get('VIRTUAL_ENV')
   return os.environ.get('VIRTUAL_ENV', has_venv)
 
 import dexcom_reader
@@ -24,6 +25,7 @@ if platform.system( ) == 'Linux':
   if is_virtualenv( ):
     prefix = ''
     dataFiles = [ ]
+    print "should not Use", dataFiles
 
 setup(name='dexcom_reader',
     version='0.0.6', # http://semver.org/
