@@ -2,34 +2,12 @@
 
 from setuptools import setup, find_packages
 import platform
-import subprocess
-import sys
-
-def is_virtualenv ( ):
-  import os, os.path
-  proc = subprocess.Popen(['which', 'add2virtualenv'], stderr=subprocess.PIPE, stdout=subprocess.PIPE)
-  shell = os.path.dirname(sys.argv[0])
-  proc.communicate( )
-  has_venv = proc.poll( ) == 0
-  print "RESULT", proc.poll( ), has_venv, os.environ.get('VIRTUAL_ENV')
-  return os.environ.get('VIRTUAL_ENV', has_venv)
 
 import dexcom_reader
+
 def readme():
     with open("README.md") as f:
         return f.read()
-
-dataFiles = [ ]
-if platform.system( ) == 'Linux':
-  # prefix = '/'
-  prefix = ''
-  dataFiles = [
-      (prefix + 'etc/udev/rules.d', ['etc/udev/rules.d/80-dexcom.rules']),
-    ]
-  if is_virtualenv( ):
-    prefix = ''
-    dataFiles = [ ]
-    print "should not Use", dataFiles
 
 setup(name='dexcom_reader',
     version='0.0.6', # http://semver.org/
@@ -37,7 +15,6 @@ setup(name='dexcom_reader',
     long_description=readme(),
     author="Will Nowak",
     # I'm just maintaining the package, @compbrain authored it.
-    # I don't have their email.
     author_email="compbrain+dexcom_reader@gmail.com",
     maintainer="Ben West",
     maintainer_email="bewest+dexcom_reader@gmail.com",
@@ -54,7 +31,9 @@ setup(name='dexcom_reader',
         'Topic :: Scientific/Engineering',
         'Topic :: Software Development :: Libraries'
     ],
-    data_files=dataFiles,
+    package_data={
+      'dexcom_reader': ['etc/udev/rules.d/*']
+    },
     zip_safe=False,
     include_package_data=True
 )
