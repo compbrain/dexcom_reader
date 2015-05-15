@@ -2,6 +2,13 @@
 
 from setuptools import setup, find_packages
 import platform
+import subprocess
+
+def is_virtualenv ( ):
+  import os
+  proc = subprocess.Popen(['which', 'virtualenvwrapper'], stderr=subprocess.PIPE, stdout=subprocess.PIPE)
+  has_venv = proc.poll( ) == 0
+  return os.environ.get('VIRTUAL_ENV', has_venv)
 
 import dexcom_reader
 def readme():
@@ -10,8 +17,11 @@ def readme():
 
 dataFiles = [ ]
 if platform.system( ) == 'Linux':
+  prefix = '/'
+  if is_virtualenv( ):
+    prefix = ''
   dataFiles = [
-      ('/etc/udev/rules.d', ['etc/udev/rules.d/80-dexcom.rules']),
+      (prefix + 'etc/udev/rules.d', ['etc/udev/rules.d/80-dexcom.rules']),
     ]
 
 setup(name='dexcom_reader',
