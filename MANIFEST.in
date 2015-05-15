@@ -1,4 +1,4 @@
 include README.md
 include LICENSE
 include CHANGES.*
-graft etc/
+graft etc
