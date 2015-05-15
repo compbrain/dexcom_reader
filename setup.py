@@ -22,6 +22,7 @@ def readme():
 dataFiles = [ ]
 if platform.system( ) == 'Linux':
   # prefix = '/'
+  prefix = ''
   dataFiles = [
       (prefix + 'etc/udev/rules.d', ['etc/udev/rules.d/80-dexcom.rules']),
     ]
