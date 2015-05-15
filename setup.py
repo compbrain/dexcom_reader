@@ -9,10 +9,8 @@ def is_virtualenv ( ):
   import os, os.path
   proc = subprocess.Popen(['which', 'add2virtualenv'], stderr=subprocess.PIPE, stdout=subprocess.PIPE)
   shell = os.path.dirname(sys.argv[0])
+  proc.communicate( )
   has_venv = proc.poll( ) == 0
-  print "shell root shares project root", shell, os.path.dirname(__file__)
-  print 'huh', sys.argv, has_venv, os.environ, __file__
-  print 'real_prefix', getattr(sys, 'real_prefix', '??')
   print "RESULT", proc.poll( ), has_venv, os.environ.get('VIRTUAL_ENV')
   return os.environ.get('VIRTUAL_ENV', has_venv)
 
@@ -23,7 +21,7 @@ def readme():
 
 dataFiles = [ ]
 if platform.system( ) == 'Linux':
-  prefix = '/'
+  # prefix = '/'
   dataFiles = [
       (prefix + 'etc/udev/rules.d', ['etc/udev/rules.d/80-dexcom.rules']),
     ]
