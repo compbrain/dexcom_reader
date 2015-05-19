@@ -10,7 +10,7 @@ def readme():
         return f.read()
 
 setup(name='dexcom_reader',
-    version='0.0.6', # http://semver.org/
+    version='0.0.7', # http://semver.org/
     description='Audit, and inspect data from Dexcom G4.',
     long_description=readme(),
     author="Will Nowak",
