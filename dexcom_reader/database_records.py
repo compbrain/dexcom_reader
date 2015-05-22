@@ -90,6 +90,7 @@ class GenericXMLRecord(GenericTimestampedRecord):
 
 
 class InsertionRecord(GenericTimestampedRecord):
+  FIELDS = ['insertion_time', 'session_state']
   FORMAT = '<3IcH'
 
   @property
@@ -117,6 +118,7 @@ class Calibration(GenericTimestampedRecord):
 
 class MeterRecord(GenericTimestampedRecord):
   FORMAT = '<2IHIH'
+  FIELDS = ['meter_glucose', 'meter_time' ]
 
   @property
   def meter_glucose(self):

@@ -1,0 +1,17 @@
+
+
+
+# udev can only match one entry at a time, but this triggers additional add entries.
+# 22a3:0047
+# 22a3 0047
+ATTRS{idVendor}=="22a3", ATTRS{idProduct}=="0047", \
+  ENV{ID_MM_DEVICE_IGNORE}="1", \
+  MODE="0664", GROUP="plugdev"
+
+
+# create a symlink to the ttyUSB device created automatically above
+#ACTION=="add",                                       \
+#  SUBSYSTEM=="tty", \
+#  ATTRS{idVendor}=="22a3", ATTRS{idProduct}=="0047", \
+#  SYMLINK+="ttyUSB.Dexcom%n"
+
